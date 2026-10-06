@@ -25,7 +25,7 @@ if (-not (Test-Path -LiteralPath $python)) { throw 'Local Python environment is 
 if (-not (Test-Path -LiteralPath $allure)) { throw 'Local Allure installation is missing.' }
 
 New-Item -ItemType Directory -Force $env:TEMP, '.runtime\ci' | Out-Null
-& $python -m pytest .\test_login.py .\test_product.py .\test_category.py -v `
+& $python -m pytest .\test_login.py .\test_product.py .\test_category.py .\test_extended.py .\test_business_queries.py -v `
     --alluredir=.runtime/ci/allure-results --clean-alluredir `
     --junitxml=.runtime/ci/junit.xml
 $testExit = $LASTEXITCODE
