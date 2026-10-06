@@ -1,0 +1,44 @@
+name: Mall API tests
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mall-local-api
+  cancel-in-progress: false
+
+jobs:
+  api-tests:
+    runs-on: [self-hosted, Windows, X64, mall-local]
+    timeout-minutes: 15
+    env:
+      MALL_DB_PASSWORD: ${{ secrets.MALL_DB_PASSWORD }}
+      TEMP: F:\softwaretesting\mall-loaal\.runtime\tmp
+      TMP: F:\softwaretesting\mall-loaal\.runtime\tmp
+      PIP_CACHE_DIR: F:\softwaretesting\mall-loaal\.runtime\cache\pip
+      PYTHONIOENCODING: utf-8
+    steps:
+      - name: Check out test code
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Run tests and build report
+        shell: powershell
+        run: .\Run-CI.ps1
+      - name: Archive results even when tests fail
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mall-api-results-${{ github.run_number }}
+          path: |
+            .runtime/ci/allure-results
+            .runtime/ci/allure-report
+            .runtime/ci/junit.xml
+            .runtime/logs/api-tests.log
+          if-no-files-found: warn
+          retention-days: 14
