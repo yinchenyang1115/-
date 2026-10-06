@@ -1,0 +1,30 @@
+- id: wrong-password
+  request:
+    username: admin
+    password: wrong-password
+  expected:
+    code: 500
+    message: "密码不正确"
+
+- id: empty-username
+  request:
+    username: ""
+    password: macro123
+  expected:
+    code: 404
+    message: "username不能为空"
+
+- id: missing-password
+  request:
+    username: admin
+  expected:
+    code: 404
+    message: "password不能为空"
+
+- id: empty-password
+  request:
+    username: admin
+    password: ""
+  expected:
+    code: 404
+    message: "password不能为空"
